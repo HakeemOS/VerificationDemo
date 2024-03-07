@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2020.2 (64-bit)
+# SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
+# IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+# Start of session at: Tue Mar  5 08:40:05 2024
+# Process ID: 20496
+# Current directory: C:/Users/squid/OneDrive/Documents/Vivado/2024/VerificationDemo/VerificationDemo.runs/impl_1
+# Command line: vivado.exe -log invLED.vdi -applog -product Vivado -messageDb vivado.pb -mode batch -source invLED.tcl -notrace
+# Log file: C:/Users/squid/OneDrive/Documents/Vivado/2024/VerificationDemo/VerificationDemo.runs/impl_1/invLED.vdi
+# Journal file: C:/Users/squid/OneDrive/Documents/Vivado/2024/VerificationDemo/VerificationDemo.runs/impl_1\vivado.jou
+#-----------------------------------------------------------
+source invLED.tcl -notrace

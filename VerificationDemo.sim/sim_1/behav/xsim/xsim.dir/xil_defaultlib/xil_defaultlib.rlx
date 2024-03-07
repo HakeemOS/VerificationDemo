@@ -1,0 +1,10 @@
+0.7
+2020.2
+Nov 18 2020
+09:47:47
+C:/Users/squid/OneDrive/Documents/Vivado/2024/VerificationDemo/VerificationDemo.sim/sim_1/behav/xsim/glbl.v,1605673889,verilog,,,,glbl,,uvm,,,,,,
+C:/Users/squid/OneDrive/Documents/Vivado/2024/VerificationDemo/VerificationDemo.srcs/sim_1/new/basicUVM_tb.sv,1709647082,systemVerilog,,,C:/Xilinx/Vivado/2020.2/data/xsim/system_verilog/uvm_include/uvm_macros.svh,basicUVM_tb,,uvm,,,,,,
+C:/Users/squid/OneDrive/Documents/Vivado/2024/VerificationDemo/VerificationDemo.srcs/sim_1/new/invLED_tv_tb.sv,1709647484,systemVerilog,,,,invLED_tv_tb,,uvm,,,,,,
+C:/Users/squid/OneDrive/Documents/Vivado/2024/VerificationDemo/VerificationDemo.srcs/sim_1/new/uvmTest_tb.sv,1709647665,systemVerilog,,,C:/Xilinx/Vivado/2020.2/data/xsim/system_verilog/uvm_include/uvm_macros.svh,$unit_uvmTest_tb_sv;uvmTest_tb,,uvm,,,,,,
+C:/Users/squid/OneDrive/Documents/Vivado/2024/VerificationDemo/VerificationDemo.srcs/sources_1/new/invLED_s.sv,1709646432,systemVerilog,,C:/Users/squid/OneDrive/Documents/Vivado/2024/VerificationDemo/VerificationDemo.srcs/sim_1/new/invLED_tv_tb.sv,,invLED_s,,uvm,,,,,,
+C:/Xilinx/Vivado/2020.2/data/xsim/system_verilog/uvm_include/uvm_macros.svh,1605717275,verilog,,,,,,,,,,,,

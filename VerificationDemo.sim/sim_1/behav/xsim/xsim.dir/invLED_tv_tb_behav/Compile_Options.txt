@@ -1,0 +1,1 @@
+-wto "92495449708f43509755d56b14e23f53" --incr --debug "typical" --relax --mt "2" -L "xil_defaultlib" -L "uvm" -L "unisims_ver" -L "unimacro_ver" -L "secureip" --snapshot "invLED_tv_tb_behav" "xil_defaultlib.invLED_tv_tb" "xil_defaultlib.glbl" -log "elaborate.log" -L "uvm" 

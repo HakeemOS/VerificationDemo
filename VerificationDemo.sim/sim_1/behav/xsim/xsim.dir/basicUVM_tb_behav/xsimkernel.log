@@ -1,0 +1,7 @@
+Running: xsim.dir/basicUVM_tb_behav/xsimk.exe -simmode gui -wdb basicUVM_tb_behav.wdb -simrunnum 0 -socket 50956
+Design successfully loaded
+Design Loading Memory Usage: 13404 KB (Peak: 13404 KB)
+Design Loading CPU Usage: 46 ms
+Simulation completed
+Simulation Memory Usage: 16656 KB (Peak: 16656 KB)
+Simulation CPU Usage: 92 ms

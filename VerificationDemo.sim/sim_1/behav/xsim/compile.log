@@ -1,0 +1,4 @@
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/squid/OneDrive/Documents/Vivado/2024/VerificationDemo/VerificationDemo.srcs/sim_1/new/uvmTest_tb.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module uvmTest_tb
+ERROR: [VRFC 10-910] incorrect number of macro arguments [C:/Users/squid/OneDrive/Documents/Vivado/2024/VerificationDemo/VerificationDemo.srcs/sim_1/new/uvmTest_tb.sv:38]
+ERROR: [VRFC 10-2865] module 'uvmTest_tb' ignored due to previous errors [C:/Users/squid/OneDrive/Documents/Vivado/2024/VerificationDemo/VerificationDemo.srcs/sim_1/new/uvmTest_tb.sv:25]
