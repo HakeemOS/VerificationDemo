@@ -37,6 +37,8 @@ class jkff_seq_item extends uvm_sequence_item;              //used to add class 
     endfunction 
 endclass //jkff_seq_item extends uvm_sequence_item
 
+
+
 class seq1 extends uvm_sequence #(jkff_seq_item);
 
     `uvm_object_utils(seq1)
@@ -59,6 +61,8 @@ class seq1 extends uvm_sequence #(jkff_seq_item);
     endtask //automatic
 endclass //seq1 extends uvm_sequence #(jkff_seq_item)
 
+
+
 class seq2 extends uvm_sequence #(jkff_seq_item);
 
     `uvm_object_utils(seq2)
@@ -78,6 +82,8 @@ class seq2 extends uvm_sequence #(jkff_seq_item);
         end
     endtask //automatic
 endclass //seq2 extends uvm_sequence #(jkff_seq_item)
+
+
 
 class seq3 extends uvm_sequence #(jkff_seq_item);
 
@@ -99,6 +105,8 @@ class seq3 extends uvm_sequence #(jkff_seq_item);
     endtask //automatic
 endclass //seq3 extends uvm_sequence #(jkff_seq_item)
 
+
+
 class jkff_sequencer extends uvm_sequencer #(jkff_seq_item);
 
     `uvm_component_utils(jkff_sequencer)
@@ -106,6 +114,8 @@ class jkff_sequencer extends uvm_sequencer #(jkff_seq_item);
         super.new(name, parent); 
     endfunction //new()
 endclass //jkff_sequencer extends uvm_sequencer
+
+
 
 class jkff_driver extends uvm_driver #(jkff_seq_item);
     virtual jkff_if vif; 
@@ -141,6 +151,8 @@ class jkff_driver extends uvm_driver #(jkff_seq_item);
         drive(); 
     endtask //automatic
 endclass //jkff_driver extends uvm_driver
+
+
 
 class jkff_monitor extends uvm_monitor;
     jkff_seq_item txn;
@@ -181,6 +193,8 @@ class jkff_monitor extends uvm_monitor;
     endtask //automatic
 endclass //jkff_monitor extends uvm_monitor
 
+
+
 class agent_config extends uvm_object_utils;
     uvm_active_passive_enum is_active = UVM_ACTIVE;                                         //we use this instead of normal enum because it is 2 bit instead of int type 2^32 for normal enum; save mem
     //uvm_active_passive_enum agent_type = UVM_ACTIVE; also works  
@@ -189,6 +203,8 @@ class agent_config extends uvm_object_utils;
         super.new(name);
     endfunction //new()
 endclass //agent_config extends uvm_object_utils
+
+
 
 class jkff_agent extends uvm_agent;
     agent_config a_cofig; 
@@ -222,20 +238,68 @@ class jkff_agent extends uvm_agent;
     endfunction
 endclass //jkff_agent extends uvm_agent
 
+
+
 class jkff_scoreboard extends uvm_scoreboard;
+    jkff_seq_item data;                                                                     //might rename to txn; 
+
+    uvm_analysis_imp #(jkff_seq_item, jkff_scoreboard) aip; 
 
     `uvm_component_utils(jkff_scoreboard)
     function new(string name="jkff_scoreboard", uvm_component parent);
         super.new(name, parent); 
+        aip = new("aip", this); 
     endfunction //new()
+
+    virtual function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+        data = jkff_seq_item::type_id::create("data");                                      
+    endfunction
+
+    virtual function void write ( jkff_seq_item t);
+        'uvm_info(get_type_name(), "Data recv'd from Monitor Analysis Port...", UVM_NONE)
+        t.print(); 
+        case (t.jK)
+            2'b01 : begin
+                if ((t.q == 0) && (t.qn == 1)) begin
+                    'uvm_info(get_type_name(), "PASS!", UVM_NONE)
+                end else begin
+                    `uvm_info(get_type_name(), "FAIL!", UVM_NONE)
+                end
+            end 
+            2'b10 : begin
+                if ((t.q == 1) && (t.qn == 0)) begin
+                    'uvm_info(get_type_name(), "PASS!", UVM_NONE)
+                end else begin
+                    `uvm_info(get_type_name(), "FAIL!", UVM_NONE)
+                end
+            end
+            2'b11 : begin
+                `uvm_info(get_type_name(), "MUST DETERMINE PASS/FAIL STATEMENT(S)", UVM_NONE)
+            end
+            default:
+                `uvm_info(get_type_name(), "MUST DETERMINE PASS/FAIL STATEMENT(S)", UVM_NONE) 
+        endcase
+        
+    endfunction
 endclass //jkff_scoreboard extends uvm_scoreboard
 
+
+
 class jkff_env extends uvm_env;
+    jkff_scoreboard jkff_sb; 
+    jkff_agent jkff_a; 
 
     `uvm_component_utils(jkff_env)
     function new(string name="jkff_env", uvm_component parent);
         super.new(name, parent); 
     endfunction //new()
+
+    virtual function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+        jkff_sb = jkff_scoreboard::type_id::create("jkff_sb", this);
+        jkff_agt = jkff_agent::type_id::create("jkff_agt", this); 
+    endfunction
 endclass //jkff_env extends uvm_env
 
 class jkff_test extends uvm_test;

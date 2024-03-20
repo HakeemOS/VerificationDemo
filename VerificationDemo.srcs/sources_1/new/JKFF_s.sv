@@ -30,20 +30,20 @@ module JKFF_s(jk, clk, q, qn);
 
     always @(posedge clk ) begin
         case (jk)
-            2'b01 : begin
+            2'b01 : begin           //reset
                 q = 0; 
                 qTemp = 0; 
             end 
-            2'b10 : begin
+            2'b10 : begin           //set
                 q = 1;
                 qTemp = 1; 
             end
                 
-            2'b11 : begin
+            2'b11 : begin           //toggle
                 q = ~q;
                 qTemp = ~qTemp; 
             end
-            default: 
+            default:                //hold
                 q = q; 
         endcase
     end
