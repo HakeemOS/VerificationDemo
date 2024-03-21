@@ -207,7 +207,7 @@ endclass //agent_config extends uvm_object_utils
 
 
 class jkff_agent extends uvm_agent;
-    agent_config a_cofig; 
+    agent_config a_config; 
     jkff_sequencer jkff_seqr; 
     jkff_driver jkff_drvr;
     jkff_monitor jkff_mon;  
@@ -221,7 +221,7 @@ class jkff_agent extends uvm_agent;
         super.build_phase(phase);
         a_config = agent_config::type_id::create("a_config");                               //this uses factory to create object
         jkff_mon = jkff_monitor::type_id::create("jkff_mon", this);  
-        if (!uvm_config_db #(agent_config)::get(this, "", "agent_configuration", agent_config)) begin                   //this is set in top level like key virtual_if
+        if (!uvm_config_db #(agent_config)::get(this, "", "agent_configuration", a_config)) begin                   //this is set in jkff_test; also function not a macro
             `uvm_fatal(get_type_name(), "Unable to get() agent configuration from uvm_config_db; Ensure set...")
         end
         if (agent_config.is_active == UVM_ACTIVE) begin                                     //can also use; if(get_is_active() ==UVM_ACTIVE) begin ...
@@ -257,19 +257,19 @@ class jkff_scoreboard extends uvm_scoreboard;
     endfunction
 
     virtual function void write ( jkff_seq_item t);
-        'uvm_info(get_type_name(), "Data recv'd from Monitor Analysis Port...", UVM_NONE)
+        `uvm_info(get_type_name(), "Data recv'd from Monitor Analysis Port...", UVM_NONE)
         t.print(); 
         case (t.jK)
             2'b01 : begin
                 if ((t.q == 0) && (t.qn == 1)) begin
-                    'uvm_info(get_type_name(), "PASS!", UVM_NONE)
+                    `uvm_info(get_type_name(), "PASS!", UVM_NONE)
                 end else begin
                     `uvm_info(get_type_name(), "FAIL!", UVM_NONE)
                 end
             end 
             2'b10 : begin
                 if ((t.q == 1) && (t.qn == 0)) begin
-                    'uvm_info(get_type_name(), "PASS!", UVM_NONE)
+                    `uvm_info(get_type_name(), "PASS!", UVM_NONE)
                 end else begin
                     `uvm_info(get_type_name(), "FAIL!", UVM_NONE)
                 end
@@ -288,7 +288,7 @@ endclass //jkff_scoreboard extends uvm_scoreboard
 
 class jkff_env extends uvm_env;
     jkff_scoreboard jkff_sb; 
-    jkff_agent jkff_a; 
+    jkff_agent jkff_agt; 
 
     `uvm_component_utils(jkff_env)
     function new(string name="jkff_env", uvm_component parent);
@@ -300,22 +300,79 @@ class jkff_env extends uvm_env;
         jkff_sb = jkff_scoreboard::type_id::create("jkff_sb", this);
         jkff_agt = jkff_agent::type_id::create("jkff_agt", this); 
     endfunction
+
+    virtual function void connect_phase(uvm_phase phase);
+        super.connect_phase(phase);
+        jkff_agt.jkff_mon.ap.connect(jkff_sb.aip); 
+    endfunction
 endclass //jkff_env extends uvm_env
 
-class jkff_test extends uvm_test;
 
+
+class jkff_test extends uvm_test;
+    agent_config a_config; 
+    jkff_env jkff_e; 
+    
     `uvm_component_utils(jkff_test)
     function new(string name="jkff_test", uvm_component parent);
         super.new(name, parent); 
     endfunction //new()
+
+    virtual function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+        a_config = agent_config::type_id::create("a_config");
+        jkff_e = jkff_env::type_id::create("jkff_e", this); 
+        uvm_config_db #(agent_config)::set(this, "*", "agent_configuration", a_config);                     //Function not macro!
+    endfunction
+
+    virtual function void end_of_elaboration_phase(uvm_phase phase);
+        super.end_of_elaboration_phase(phase);
+        uvm_top.print_topology(); 
+    endfunction
+
+    virtual function void report_phase(uvm_phase phase);
+        uvm_report_server svr; 
+        super.report_phase(phase);
+        svr = uvm_report_server::get_server(); 
+
+        if (svr.get_severity_count(UVM_FATAL) + svr.get_severity_count(UVM_ERROR) > 0) begin
+            `uvm_info(get_type_name(), "========================================", UVM_NONE)
+            `uvm_info(get_type_name(), "================= FAIL =================", UVM_NONE)
+            `uvm_info(get_type_name(), "========================================", UVM_NONE)
+        end else begin
+            `uvm_info(get_type_name(), "========================================", UVM_NONE)
+            `uvm_info(get_type_name(), "================= PASS =================", UVM_NONE)
+            `uvm_info(get_type_name(), "========================================", UVM_NONE)
+        end 
+    endfunction
 endclass //jkff_test extends uvm_test
 
 class t1 extends jkff_test;
+    seq1 s1; 
+    seq2 s2; 
+    seq3 s3; 
 
     `uvm_component_utils(t1)
     function new(string name="test 1", uvm_component parent);
         super.new(name, parent);
     endfunction //new()
+
+    virtual function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+    endfunction
+
+    virtual task automatic run_phase(uvm_phase phase);
+        s1 = seq1::type_id::create("s1");                                                                   //creating instance of ea sequence
+        s2 = seq2::type_id::create("s2"); 
+        s3 = seq3::type_id::create("s3"); 
+
+        phase.raise_objection(this);
+        s1.start(jkff_e.jkff_agt.)        
+        s1.start(jkff_e.jkff_agt.)
+        s1.start(jkff_e.jkff_agt.)        
+        phase.drop_objection(this);
+
+    endtask //automatic
 endclass //t1 extends jkff_test
 
 module JKFF_utb();
